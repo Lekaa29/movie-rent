@@ -1,33 +1,51 @@
-HELP.md
-target/
-.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
+# ===========================
+# Java / Spring Boot
+# ===========================
+# Maven target directory
+backend/target/
+**/target/
 
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-
-### IntelliJ IDEA ###
-.idea
-*.iws
+# Eclipse / IntelliJ IDEA
 *.iml
 *.ipr
+*.iws
+.idea/
+*.class
+*.log
 
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
+# OS files
+.DS_Store
+Thumbs.db
 
-### VS Code ###
-.vscode/
+# ===========================
+# Node / React
+# ===========================
+frontend/node_modules/
+frontend/build/
+frontend/.env
+frontend/.cache
+frontend/.pnp*
+frontend/.pnp.js
+
+# ===========================
+# Docker
+# ===========================
+docker-compose.override.yml
+**/docker-compose.override.yml
+*.env       # environment variables
+*.log       # container logs
+
+# ===========================
+# PostgreSQL / Database
+# ===========================
+init.sql.backup
+*.backup
+*.sql~      # temporary backup files
+
+# ===========================
+# Misc / IDE / temp
+# ===========================
+*.swp
+*.swo
+*.tmp
+*.bak
