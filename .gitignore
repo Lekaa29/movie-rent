@@ -1,51 +1,37 @@
-# ===========================
-# Java / Spring Boot
-# ===========================
-# Maven target directory
+
+# Backend
 backend/target/
-**/target/
+backend/.mvn/
+backend/mvnw
+backend/mvnw.cmd
+backend/*.log
+backend/.idea/
+backend/*.iml
 
-# Eclipse / IntelliJ IDEA
-*.iml
-*.ipr
-*.iws
-.idea/
-*.class
-*.log
-
-# OS files
-.DS_Store
-Thumbs.db
-
-# ===========================
-# Node / React
-# ===========================
+# Frontend
 frontend/node_modules/
 frontend/build/
 frontend/.env
-frontend/.cache
-frontend/.pnp*
-frontend/.pnp.js
+frontend/*.log
+frontend/npm-debug.log*
 
-# ===========================
+# Database
+*.sql~
+*.db
+
 # Docker
-# ===========================
-docker-compose.override.yml
-**/docker-compose.override.yml
-*.env       # environment variables
-*.log       # container logs
+postgres_data/
 
-# ===========================
-# PostgreSQL / Database
-# ===========================
-init.sql.backup
-*.backup
-*.sql~      # temporary backup files
-
-# ===========================
-# Misc / IDE / temp
-# ===========================
+# IDE
+.vscode/
+.idea/
 *.swp
 *.swo
-*.tmp
-*.bak
+
+# Environment
+.env
+.env.local
+
+# OS
+.DS_Store
+Thumbs.db

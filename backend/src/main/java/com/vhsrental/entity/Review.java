@@ -7,14 +7,17 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDateTime;
 
+
 @Entity
 @Table(name = "review", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"user_id", "vhs_id"})
 })
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString(onlyExplicitlyIncluded = true)
 public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: vhs-postgres
+    environment:
+      POSTGRES_DB: vhsrental
+      POSTGRES_USER: vhsuser
+      POSTGRES_PASSWORD: vhspassword
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - vhs-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U vhsuser -d vhsrental"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: vhs-backend
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/vhsrental
+      SPRING_DATASOURCE_USERNAME: vhsuser
+      SPRING_DATASOURCE_PASSWORD: vhspassword
+      JWT_SECRET: your-secret-key-here-make-it-at-least-256-bits-long-for-HS256-security
+      JWT_EXPIRATION: 86400000
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - vhs-network
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: vhs-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - vhs-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+
+networks:
+  vhs-network:
+    driver: bridge

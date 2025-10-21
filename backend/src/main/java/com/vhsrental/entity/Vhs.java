@@ -10,12 +10,14 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
-@Entity
-@Table(name = "vhs")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString(onlyExplicitlyIncluded = true)
+@Entity
+@Table(name = "vhs")
 public class Vhs {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,9 +37,6 @@ public class Vhs {
 
     @Column(columnDefinition = "TEXT")
     private String description;
-
-    @Column(name = "available_copies", nullable = false)
-    private Integer availableCopies = 0;
 
     @Column(name = "total_copies", nullable = false)
     private Integer totalCopies = 0;
