@@ -1,66 +1,94 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Calendar, DollarSign, Package, CheckCircle, Clock } from 'lucide-react';
+import { rentalAPI } from '../services/api';
 
 const MyRentals = () => {
   const [filter, setFilter] = useState('all');
   const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [rentals, setRentals] = useState([]);
 
-  // Sample data for demo
-  const allRentals = [
-    {
-      id: 1,
-      vhsTitle: "The Shawshank Redemption",
-      rentalDate: "2024-01-10",
-      dueDate: "2024-01-17",
-      returnDate: null,
-      totalPrice: 20.93,
-      status: "ACTIVE"
-    },
-    {
-      id: 2,
-      vhsTitle: "Pulp Fiction",
-      rentalDate: "2024-01-05",
-      dueDate: "2024-01-10",
-      returnDate: "2024-01-09",
-      totalPrice: 14.95,
-      status: "RETURNED"
-    },
-    {
-      id: 3,
-      vhsTitle: "The Matrix",
-      rentalDate: "2024-01-15",
-      dueDate: "2024-01-20",
-      returnDate: null,
-      totalPrice: 17.94,
-      status: "ACTIVE"
-    },
-    {
-      id: 4,
-      vhsTitle: "Blade Runner",
-      rentalDate: "2023-12-20",
-      dueDate: "2023-12-25",
-      returnDate: "2023-12-24",
-      totalPrice: 17.45,
-      status: "RETURNED"
-    }
-  ];
 
-  const rentals = filter === 'active' 
-    ? allRentals.filter(r => r.status === 'ACTIVE')
-    : allRentals;
+  
 
-  const handleReturn = (id) => {
-    setMessage('VHS returned successfully!');
-    setTimeout(() => setMessage(''), 3000);
-  };
-
+  // Helper: days remaining
   const getDaysRemaining = (dueDate) => {
-    const today = new Date();
-    const due = new Date(dueDate);
-    const diffTime = due - today;
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return diffDays;
-  };
+      const today = new Date();
+      const due = new Date(dueDate);
+      const diffTime = due - today;
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      return diffDays;
+    };
+
+   const getPrice = (rental) => {
+  const totalPrice = parseFloat(rental.totalPrice);
+  
+  if (isNaN(totalPrice) || totalPrice === 0) {
+    console.error('Invalid or missing totalPrice:', rental.totalPrice);
+    return 0;
+  }
+  
+  const rentalDate = new Date(rental.rentalDate);
+  const dueDate = new Date(rental.dueDate);
+  const returnDate = rental.returnDate ? new Date(rental.returnDate) : new Date();
+
+  // Reset time to midnight for accurate day calculation (matching LocalDate behavior)
+  rentalDate.setHours(0, 0, 0, 0);
+  dueDate.setHours(0, 0, 0, 0);
+  returnDate.setHours(0, 0, 0, 0);
+
+  // Calculate the number of days in the original rental period
+  const daysRented = Math.max(
+    1,
+    Math.floor((dueDate - rentalDate) / (1000 * 60 * 60 * 24))
+  );
+  
+  // Calculate daily price from total
+  const dailyPrice = totalPrice / daysRented;
+
+  // Base rental cost
+  const basePrice = totalPrice;
+
+  // Calculate late fee if overdue
+  let lateFee = 0;
+  if (returnDate > dueDate) {
+    const daysLate = Math.floor((returnDate - dueDate) / (1000 * 60 * 60 * 24));
+    const lateFeePerDay = dailyPrice * 0.2; // 20% per day late
+    lateFee = daysLate * lateFeePerDay;
+  }
+
+  return basePrice + lateFee;
+};
+  useEffect(() => {
+      loadRentals();
+    }, [filter]);
+  
+    const loadRentals = async () => {
+      try {
+        const response = filter === 'active' 
+          ? await rentalAPI.getMyActiveRentals()
+          : await rentalAPI.getMyRentals();
+        setRentals(response.data);
+      } catch (error) {
+        console.error('Error loading rentals:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    const handleReturn = async (id) => {
+      try {
+        await rentalAPI.return(id);
+        setMessage('VHS returned successfully!');
+        loadRentals();
+        setTimeout(() => setMessage(''), 3000);
+      } catch (error) {
+        setMessage(error.response?.data?.message || 'Failed to return VHS');
+      }
+    };
+  
+    if (loading) return <div>Loading...</div>;
+  
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
@@ -224,8 +252,8 @@ const MyRentals = () => {
                         <p className="text-xs uppercase tracking-wider text-white opacity-60 mb-1">
                           Total Price
                         </p>
-                        <p className="text-white text-lg font-bold">
-                          ${rental.totalPrice.toFixed(2)}
+                        <p className={`text-lg font-bold ${isOverdue ? 'text-red-400' : 'text-white'}`}>
+                          ${getPrice(rental).toFixed(2)}
                         </p>
                       </div>
                     </div>

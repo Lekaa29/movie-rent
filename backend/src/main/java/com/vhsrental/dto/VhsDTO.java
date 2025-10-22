@@ -19,7 +19,7 @@ public class VhsDTO {
     private Double averageRating;
     private Integer reviewCount;
     private LocalDateTime createdAt;
-
+    private Boolean isRentedByUser;
 
 
 

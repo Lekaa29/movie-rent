@@ -20,4 +20,5 @@ public class RentDTO {
     private String status;
 
     private BigDecimal totalPrice;
+
 }

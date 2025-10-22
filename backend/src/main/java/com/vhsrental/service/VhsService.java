@@ -3,7 +3,10 @@ package com.vhsrental.service;
 import com.vhsrental.dto.VhsCreateRequest;
 import com.vhsrental.dto.VhsDTO;
 import com.vhsrental.dto.VhsFilterDto;
+import com.vhsrental.entity.Rent;
+import com.vhsrental.entity.User;
 import com.vhsrental.entity.Vhs;
+import com.vhsrental.repository.RentRepository;
 import com.vhsrental.repository.ReviewRepository;
 import com.vhsrental.repository.VhsRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,8 +23,11 @@ public class VhsService {
 
     private final VhsRepository vhsRepository;
     private final ReviewRepository reviewRepository;
+    private final RentRepository rentRepository;
+    private final AuthService authService;
 
     public List<VhsDTO> getAllVhs() {
+
         return vhsRepository.findAll().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
@@ -30,6 +36,22 @@ public class VhsService {
     public VhsDTO getVhsById(Long id) {
         Vhs vhs = vhsRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("VHS not found"));
+
+        User currentUser = authService.getCurrentUser();
+
+        boolean isRentedByUser = rentRepository.findByUserAndVhs(currentUser, vhs).isPresent();
+
+        VhsDTO dto = convertToDTO(vhs);
+        dto.setIsRentedByUser(isRentedByUser);
+
+        return dto;
+    }
+
+
+    public VhsDTO returnVhsById(Long id) {
+        Vhs vhs = vhsRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("VHS not found"));
+        VhsDTO vhsDTO = convertToDTO(vhs);
 
         return convertToDTO(vhs);
     }

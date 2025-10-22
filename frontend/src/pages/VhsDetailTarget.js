@@ -119,20 +119,11 @@ const VhsDetail = () => {
                 )}
                 
                 {/* Availability Badge */}
-                <div className="absolute top-4 right-4">
-                  <div
-                    className={`px-3 py-1.5 rounded-full backdrop-blur-md text-xs uppercase tracking-wider font-medium ${
-                      vhs.totalCopies > 0
-                        ? 'bg-green-500 bg-opacity-20 text-green-300 border border-green-400 border-opacity-30'
-                        : 'bg-red-500 bg-opacity-20 text-red-300 border border-red-400 border-opacity-30'
-                    }`}
-                  >
-                    {vhs.totalCopies > 0
-                      ? `${vhs.totalCopies} Available`
-                      : 'Out of Stock'}
+                <div className="absolute top-6 right-6">
+                  <div className="px-4 py-2 rounded-full backdrop-blur-md bg-green-500 bg-opacity-20 text-green-300 border border-green-400 border-opacity-30">
+                    <span className="text-sm font-medium">{vhs.availableCopies} Available</span>
                   </div>
                 </div>
-
 
                 {/* Rating Badge */}
                 {vhs.averageRating > 0 && (
@@ -189,9 +180,7 @@ const VhsDetail = () => {
                   <Package className="w-4 h-4" />
                   <span className="text-xs uppercase tracking-wider">Copies</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <p className="text-white font-medium">{vhs.totalCopies}</p>
-                </div>
+                <p className="text-white font-medium">{vhs.availableCopies} / {vhs.totalCopies}</p>
               </div>
 
               <div className="space-y-2">
@@ -212,7 +201,7 @@ const VhsDetail = () => {
             </div>
 
             {/* Rental Section */}
-            {vhs.totalCopies > 0 && (
+            {vhs.availableCopies > 0 && (
               <div className="rounded-2xl p-8 border border-white border-opacity-20 space-y-6">
                 <h3 className="text-xs uppercase tracking-wider text-white opacity-60">Rent This VHS</h3>
                 

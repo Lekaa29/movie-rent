@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { User, Lock, AlertCircle } from 'lucide-react';
 
 const Login = () => {
   const [credentials, setCredentials] = useState({ username: '', password: '' });
@@ -20,129 +21,91 @@ const Login = () => {
   };
 
   return (
-    <div style={styles.container}>
-      <div style={styles.card}>
-        <h2>Login</h2>
-        {error && <div style={styles.error}>{error}</div>}
-        <form onSubmit={handleSubmit}>
-          <div style={styles.formGroup}>
-            <label>Username</label>
-            <input
-              type="text"
-              value={credentials.username}
-              onChange={(e) => setCredentials({ ...credentials, username: e.target.value })}
-              style={styles.input}
-              required
-            />
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center px-6">
+      <div className="w-full max-w-md">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 tracking-tight">
+            Welcome Back
+          </h1>
+          <p className="text-white opacity-60">
+            Sign in to continue your VHS journey
+          </p>
+        </div>
+
+        {/* Login Card */}
+        <div className="rounded-2xl p-8 border border-white border-opacity-20 backdrop-blur-sm space-y-6">
+          {/* Error Message */}
+          {error && (
+            <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-red-500 bg-opacity-20 border border-red-400 border-opacity-30 text-red-300">
+              <AlertCircle className="w-5 h-5 flex-shrink-0" />
+              <span className="text-sm">{error}</span>
+            </div>
+          )}
+
+          {/* Form */}
+          <div className="space-y-5">
+            {/* Username Field */}
+            <div>
+              <label className="block text-sm text-white opacity-80 mb-2">
+                Username
+              </label>
+              <div className="relative">
+                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white opacity-40" />
+                <input
+                  type="text"
+                  value={credentials.username}
+                  onChange={(e) => setCredentials({ ...credentials, username: e.target.value })}
+                  className="w-full pl-12 pr-4 py-3 bg-transparent border border-white border-opacity-30 rounded-xl text-white placeholder-white placeholder-opacity-40 focus:outline-none focus:border-opacity-50 transition-all duration-300"
+                  placeholder="Enter your username"
+                  required
+                />
+              </div>
+            </div>
+
+            {/* Password Field */}
+            <div>
+              <label className="block text-sm text-white opacity-80 mb-2">
+                Password
+              </label>
+              <div className="relative">
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white opacity-40" />
+                <input
+                  type="password"
+                  value={credentials.password}
+                  onChange={(e) => setCredentials({ ...credentials, password: e.target.value })}
+                  className="w-full pl-12 pr-4 py-3 bg-transparent border border-white border-opacity-30 rounded-xl text-white placeholder-white placeholder-opacity-40 focus:outline-none focus:border-opacity-50 transition-all duration-300"
+                  placeholder="Enter your password"
+                  required
+                />
+              </div>
+            </div>
+
+            {/* Submit Button */}
+            <button
+              onClick={handleSubmit}
+              className="w-full py-4 rounded-xl bg-white text-black font-medium hover:bg-opacity-90 transition-all duration-300 text-sm uppercase tracking-wider"
+            >
+              Login
+            </button>
           </div>
-          <div style={styles.formGroup}>
-            <label>Password</label>
-            <input
-              type="password"
-              value={credentials.password}
-              onChange={(e) => setCredentials({ ...credentials, password: e.target.value })}
-              style={styles.input}
-              required
-            />
+
+          {/* Register Link */}
+          <div className="text-center pt-4 border-t border-white border-opacity-10">
+            <p className="text-white opacity-60 text-sm">
+              Don't have an account?{' '}
+              <Link 
+                to="/register"
+                className="text-white font-medium hover:opacity-80 transition-opacity duration-300"
+              >
+                Register here
+              </Link>
+            </p>
           </div>
-          <button type="submit" style={styles.button}>Login</button>
-        </form>
-        <p style={styles.link}>
-          Don't have an account? <Link to="/register">Register here</Link>
-        </p>
+        </div>
       </div>
     </div>
   );
-};
-
-
-const styles = {
-  container: {
-    maxWidth: '1200px',
-    margin: '0 auto',
-    padding: '2rem',
-  },
-  card: {
-    maxWidth: '400px',
-    margin: '2rem auto',
-    padding: '2rem',
-    border: '1px solid #ddd',
-    borderRadius: '8px',
-    backgroundColor: 'white',
-  },
-  formGroup: {
-    marginBottom: '1rem',
-  },
-  input: {
-    width: '100%',
-    padding: '0.5rem',
-    fontSize: '1rem',
-    border: '1px solid #ddd',
-    borderRadius: '4px',
-    boxSizing: 'border-box',
-  },
-  button: {
-    width: '100%',
-    padding: '0.75rem',
-    backgroundColor: '#3498db',
-    color: 'white',
-    border: 'none',
-    borderRadius: '4px',
-    fontSize: '1rem',
-    cursor: 'pointer',
-  },
-  searchButton: {
-    padding: '0.5rem 1rem',
-    backgroundColor: '#3498db',
-    color: 'white',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    marginLeft: '0.5rem',
-  },
-  error: {
-    padding: '0.75rem',
-    marginBottom: '1rem',
-    backgroundColor: '#fee',
-    color: '#c33',
-    borderRadius: '4px',
-  },
-  success: {
-    padding: '0.75rem',
-    marginBottom: '1rem',
-    backgroundColor: '#efe',
-    color: '#3c3',
-    borderRadius: '4px',
-  },
-  link: {
-    marginTop: '1rem',
-    textAlign: 'center',
-  },
-  filters: {
-    display: 'flex',
-    gap: '1rem',
-    marginBottom: '2rem',
-    flexWrap: 'wrap',
-  },
-  searchBox: {
-    display: 'flex',
-    flex: 1,
-  },
-  genreFilter: {
-    minWidth: '200px',
-  },
-  select: {
-    width: '100%',
-    padding: '0.5rem',
-    fontSize: '1rem',
-    border: '1px solid #ddd',
-    borderRadius: '4px',
-  },
-  grid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
-    gap: '1.5rem',
-  },
 };
 
 export default Login;
